@@ -51,12 +51,141 @@ int num1, num2, num3, num4, Secolu1, Secolu2, Secolu3, Secolu4;
 #define HEADER_LINE "Header line\n"
 #define NombreLigne 100
 
+int Principlemain(int argc, char *argv[]);
 
-int main(int argc, char *argv[]) 
+char name1[100];
+
+int main() {
+    char name[1000];
+    char filename[1000];
+    char *p;
+    char check [2];
+    char check2 [2];
+    char *bouton1;
+    char *bouton2;
+
+
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    char buffer[20];
+
+    sprintf(buffer, "%04d-%02d-%02d_%02d-%02d-%02d", 
+        tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+        tm.tm_hour, tm.tm_min, tm.tm_sec);
+    
+    printf("Enter the name of the file : ");
+    scanf("%s", name);
+
+    int close = 1;
+    while (close = 1 ) {
+        char Question[2];
+        strcpy(filename, name);
+        char *extension = strrchr(filename, '.');
+        if (extension) {
+            *extension = '\0';
+        }
+
+        filename[strcspn(filename, "\n")] = '\0';
+
+        printf("filename = %s\n", filename);
+        strcpy(name1, filename);
+
+
+        printf("Do you want to use this file (Y/N): ");
+        scanf("%s", Question);
+        getchar();  // consomme le caractère de retour à la ligne
+
+        if (strcmp(Question, "Y") == 0 || strcmp(Question, "y") == 0) {
+            break;
+        } else {
+            printf("Enter the new file name:");
+            fgets(name, 1000, stdin);
+            name[strcspn(name, "\n")] = '\0';
+        }
+    }
+
+
+
+    printf("Do you want to have ALL-EVENTS or only COINCIDENCE events ? (A/C): ");
+    scanf ("%s", check);
+    getchar();
+
+    if (strcmp(check, "A") == 0 || strcmp(check, "a") == 0) {
+        printf("You have chosen to have ALL-EVENTS, would you like to change? (Y/N) :\n");
+
+        scanf ("%s", check2);
+        getchar();
+        if (strcmp(check2, "N") == 0 || strcmp(check2, "n") == 0) {
+            bouton1="ALL-EVENTS";
+        } else {
+            bouton1="COINCIDENCE";
+        }
+    } else if (strcmp(check, "C") == 0 || strcmp(check, "c") == 0) {
+        printf("You have chosen to have only COINCIDENCE events, do you want to change? (Y/N) :\n");
+        scanf ("%s", check2);
+        getchar();
+        if (strcmp(check2, "N") == 0 || strcmp(check2, "n") == 0) {
+            bouton1="COINCIDENCE";
+        } else {
+            bouton1="ALL-EVENTS";
+        }
+    } else {
+        printf("Choix invalide.\n");
+        getchar(); 
+        return 0;
+    }
+    bouton2="";
+    if (bouton1!="ALL-EVENTS"){
+        printf("Do you want to use ENERGY or TIME data to ? (E/T) : ");
+        char choix2[2];
+        fgets(choix2, 2, stdin);
+        getchar();
+
+        if (choix2[0] == 'E' || choix2[0] == 'e') {
+            printf("You have selected ADC0 on ENERGY and therefore ADC1 on TIME, do you want to change? (Y/N) :\n");
+            char choix[2];
+            fgets(choix, 2, stdin);
+            getchar();
+            if (choix[0] == 'N' || choix[0] == 'n') {
+                bouton2 = "ENERGY";
+            } else {
+                bouton2 = "TIME";
+            }
+        } else if (choix2[0] == 'T' || choix2[0] == 't') {
+            printf("You have chosen to have ADC0 on TIME and ADC1 on ENERGY, do you want to change? (Y/N)\n");
+            char choix[2];
+            fgets(choix, 2, stdin);
+            getchar();        
+            if (choix[0] == 'N' || choix[0] == 'n') {
+                bouton2 = "TIME";
+            } else {
+                bouton2 = "ENERGY";
+            }
+        } else {
+            printf("Invalid choice.\n");
+            return 0;
+        }
+    }
+    sprintf(filename + strlen(filename), "_%s_%s_%s.txt", bouton1, bouton2, buffer);
+
+
+
+    printf("The file name is : %s\n", filename);
+    char* args[] = {name, filename, bouton1, bouton2};
+    int num_args = sizeof(args) / sizeof(args[0]);
+    Principlemain(num_args, args);
+    printf("End of the program, press enter to end the program \n");
+    getchar();
+    return 0;
+}
+
+
+
+int Principlemain(int argc, char *argv[]) 
 {
     // Retrieving name and output_file arguments
-    char *name = argv[1];
-    char *output_file = argv[2];
+    char *name = argv[0];
+    char *output_file = argv[1];
     char *OutPutFile = "output_file2.txt";
     int bouton1, bouton2;
 
@@ -67,8 +196,8 @@ int main(int argc, char *argv[])
     short int end_of_header = FALSE;
 
 
-    bouton1 = atoi(argv[3]);
-    bouton2 = atoi(argv[4]);
+    bouton1 = atoi(argv[2]);
+    bouton2 = atoi(argv[3]);
     argv[argc-1] = NULL;
     argv[argc-2] = NULL;
 
@@ -80,7 +209,6 @@ int main(int argc, char *argv[])
     printf("argv[0] = %s\n", argv[0]);
     printf("argv[1] = %s\n", argv[1]);
     printf("argv[2] = %s\n", argv[2]);
-    printf("argv[3] = %s\n", argv[3]);
 
     argc=argc-2;
     printf("argc: %d\n", argc);
@@ -140,26 +268,26 @@ int main(int argc, char *argv[])
 
     if (argc == 2)
     {
-        ascii_output_filename = calloc(sizeof(char), strlen(argv[1]));
-        strcpy(ascii_output_filename, argv[1]);
+        ascii_output_filename = calloc(sizeof(char), strlen(argv[0]));
+        strcpy(ascii_output_filename, argv[0]);
         strcpy(ascii_output_filename + strlen(ascii_output_filename)-4, ".txt");
     }
     else if (argc >= 3)
     {
-        ascii_output_filename = calloc(sizeof(char), strlen(argv[2]) + 4);
-        strcpy(ascii_output_filename, argv[2]);
+        ascii_output_filename = calloc(sizeof(char), strlen(argv[1]) + 4);
+        strcpy(ascii_output_filename, argv[1]);
         strcpy(ascii_output_filename + strlen(ascii_output_filename)-4, ".txt");
     }
 
     printf("Output file: %s\n", ascii_output_filename);
 
-    input_file = fopen(argv[1], "rb");
+    input_file = fopen(argv[0], "rb");
 
 
     printf("argv 0  est %s\n", argv[0]);
-    printf("argv 1  est %s\n", argv[1]);
-    printf("argv 2  est %s\n", argv[2]);
-    printf("argv 3  est %s\n", argv[3]);
+    printf("argv 1  est %s\n", argv[0]);
+    printf("argv 2  est %s\n", argv[1]);
+    printf("argv 3  est %s\n", argv[2]);
 
 
 
@@ -167,7 +295,7 @@ int main(int argc, char *argv[])
 
     if (input_file == NULL)
     {
-        printf("Unable to read: %s\n", argv[1]);
+        printf("Unable to read: %s\n", argv[0]);
 
         return 1;
     }
@@ -315,10 +443,10 @@ int main(int argc, char *argv[])
      */
     /*
     fclose(input_file);
-    input_file = fopen(argv[1], "rb");
+    input_file = fopen(argv[0], "rb");
     if (input_file == NULL)
     {
-        printf("Unable to re-read: %s\n", argv[1]);
+        printf("Unable to re-read: %s\n", argv[0]);
         return 2;
     }
      */
@@ -625,13 +753,15 @@ int main(int argc, char *argv[])
                 num4 = Secolu4;
             }    
         }
-        fclose(fp);
-        fclose(fp2);
+    fclose(fp);
+    fclose(fp2);
     remove(output_file);
-    rename(OutPutFile, output_file);
     }
-
-
+    strcat(name1, ".txt");
+    if (rename(name1, argv[1]) != 0) {
+        printf("Error: Unable to rename the file.\n");
+        return 1;
+    }
 
     return 0;
 }
