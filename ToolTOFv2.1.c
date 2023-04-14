@@ -61,8 +61,9 @@ int main() {
     char *p;
     char check [2];
     char check2 [2];
-    char *bouton1;
-    char *bouton2;
+    char check3 [2];
+    char bouton1[100];
+    char bouton2[100];
 
 
     time_t t = time(NULL);
@@ -87,9 +88,9 @@ int main() {
 
         filename[strcspn(filename, "\n")] = '\0';
 
-        printf("filename = %s\n", filename);
+        printf("filename = %s\n", name);
         strcpy(name1, filename);
-
+        strcat(name1, ".txt");
 
         printf("Do you want to use this file (Y/N): ");
         scanf("%s", Question);
@@ -103,78 +104,65 @@ int main() {
             name[strcspn(name, "\n")] = '\0';
         }
     }
-
-
-
     printf("Do you want to have ALL-EVENTS or only COINCIDENCE events ? (A/C): ");
     scanf ("%s", check);
     getchar();
 
     if (strcmp(check, "A") == 0 || strcmp(check, "a") == 0) {
         printf("You have chosen to have ALL-EVENTS, would you like to change? (Y/N) :\n");
-
         scanf ("%s", check2);
         getchar();
         if (strcmp(check2, "N") == 0 || strcmp(check2, "n") == 0) {
-            bouton1="ALL-EVENTS";
+            strcpy(bouton1, "ALL-EVENTS");
         } else {
-            bouton1="COINCIDENCE";
+            strcpy(bouton1, "COINCIDENCE");
         }
     } else if (strcmp(check, "C") == 0 || strcmp(check, "c") == 0) {
         printf("You have chosen to have only COINCIDENCE events, do you want to change? (Y/N) :\n");
         scanf ("%s", check2);
         getchar();
         if (strcmp(check2, "N") == 0 || strcmp(check2, "n") == 0) {
-            bouton1="COINCIDENCE";
+            strcpy(bouton1, "COINCIDENCE");
         } else {
-            bouton1="ALL-EVENTS";
+            strcpy(bouton1, "ALL-EVENTS");
         }
     } else {
         printf("Choix invalide.\n");
         getchar(); 
         return 0;
     }
-    bouton2="";
-    if (bouton1!="ALL-EVENTS"){
-        printf("Do you want to use ENERGY or TIME data to ? (E/T) : ");
-        char choix2[2];
-        fgets(choix2, 2, stdin);
-        getchar();
 
-        if (choix2[0] == 'E' || choix2[0] == 'e') {
-            printf("You have selected ADC0 on ENERGY and therefore ADC1 on TIME, do you want to change? (Y/N) :\n");
-            char choix[2];
-            fgets(choix, 2, stdin);
-            getchar();
-            if (choix[0] == 'N' || choix[0] == 'n') {
-                bouton2 = "ENERGY";
-            } else {
-                bouton2 = "TIME";
-            }
-        } else if (choix2[0] == 'T' || choix2[0] == 't') {
-            printf("You have chosen to have ADC0 on TIME and ADC1 on ENERGY, do you want to change? (Y/N)\n");
-            char choix[2];
-            fgets(choix, 2, stdin);
-            getchar();        
-            if (choix[0] == 'N' || choix[0] == 'n') {
-                bouton2 = "TIME";
-            } else {
-                bouton2 = "ENERGY";
-            }
+    
+    strcpy(bouton2, "ENERGY");
+
+    
+    if (strcmp(bouton1, "COINCIDENCE")==0) {
+        printf("Do you want to use ENERGY or TIME data to ADC0? (E/T) : ");
+        scanf ("%s", check3);
+        getchar();
+        if (strcmp(check3, "e")==0 || strcmp(check3, "E")== 0) {
+            strcpy(bouton2, "ENERGY");
+        } else if (strcmp(check3, "T")==0 || strcmp(check3, "t")==0) {
+            strcpy(bouton2, "TIME");
+
         } else {
-            printf("Invalid choice.\n");
+            printf("Choix invalide.\n");
+            getchar();
             return 0;
         }
-    }
+    } 
+
+
+
     sprintf(filename + strlen(filename), "_%s_%s_%s.txt", bouton1, bouton2, buffer);
 
 
 
-    printf("The file name is : %s\n", filename);
+
     char* args[] = {name, filename, bouton1, bouton2};
     int num_args = sizeof(args) / sizeof(args[0]);
     Principlemain(num_args, args);
-    printf("End of the program, press enter to end the program \n");
+    printf("This is the end of the program, press enter \n");
     getchar();
     return 0;
 }
@@ -187,7 +175,8 @@ int Principlemain(int argc, char *argv[])
     char *name = argv[0];
     char *output_file = argv[1];
     char *OutPutFile = "output_file2.txt";
-    int bouton1, bouton2;
+    char *bouton1;
+    char *bouton2;
 
     char *ascii_output_filename = NULL;
     FILE *ascii_output_file = NULL;
@@ -195,23 +184,25 @@ int Principlemain(int argc, char *argv[])
 
     short int end_of_header = FALSE;
 
-
-    bouton1 = atoi(argv[2]);
-    bouton2 = atoi(argv[3]);
+    //printf("argv[2] = %s\n", argv[2]);
+    //printf("argv[3] = %s\n", argv[3]);
+    bouton1 = argv[2];
+    bouton2 = argv[3];
     argv[argc-1] = NULL;
     argv[argc-2] = NULL;
 
+    //printf("The name1 is : %s\n", name1);
 
-    printf("bouton1: %d\n", bouton1);
-    printf("bouton2: %d\n", bouton2);
+    //printf("bouton1: %s\n", bouton1);
+    //printf("bouton2: %s\n", bouton2);
 
    
-    printf("argv[0] = %s\n", argv[0]);
-    printf("argv[1] = %s\n", argv[1]);
-    printf("argv[2] = %s\n", argv[2]);
+    //printf("argv[0] = %s\n", argv[0]);
+    //printf("argv[1] = %s\n", argv[1]);
+    //printf("argv[2] = %s\n", argv[2]);
 
     argc=argc-2;
-    printf("argc: %d\n", argc);
+    //printf("argc: %d\n", argc);
 
 
 
@@ -279,16 +270,16 @@ int Principlemain(int argc, char *argv[])
         strcpy(ascii_output_filename + strlen(ascii_output_filename)-4, ".txt");
     }
 
-    printf("Output file: %s\n", ascii_output_filename);
+    //printf("Output file: %s\n", ascii_output_filename);
 
     input_file = fopen(argv[0], "rb");
 
-
+/*
     printf("argv 0  est %s\n", argv[0]);
     printf("argv 1  est %s\n", argv[0]);
     printf("argv 2  est %s\n", argv[1]);
     printf("argv 3  est %s\n", argv[2]);
-
+*/
 
 
 
@@ -714,8 +705,9 @@ int Principlemain(int argc, char *argv[])
     int i=-1;
     int j=0;
     
-    if (bouton1 == 2) {
-        FILE *fp = fopen(output_file, "r");
+    if (strcmp(bouton1, "COINCIDENCE") ==0) {
+
+        FILE *fp = fopen(name1, "r");
         FILE *fp2 = fopen(OutPutFile, "w");
 
         //Checks if the files have been opened successfully
@@ -729,21 +721,20 @@ int Principlemain(int argc, char *argv[])
         }
 
         // Scans the file row by row, retrieves the numbers from the two columns of each row and checks the given ADC to arrange the numbers in order
-        printf("line maintenant : %s\n", line);
         while (fgets(line, sizeof(line), fp)) {
-            printf("\n line : %s", line);
+            //printf("\n line : %s", line);
             i=i+1;
-            printf("j : %d\n", j);    
+            //printf("j : %d\n", j);    
             if (i==0){
                 sscanf(line, "%d %d %d %d", &num1, &num2, &num3, &num4);
             }
             if (i>0) {
                 sscanf(line, "%d %d %d %d", &Secolu1, &Secolu2, &Secolu3, &Secolu4);
                 if (num1 == Secolu1 && num3==0 && Secolu3 == 1) {
-                        if (bouton2 == 1) {
+                        if (strcmp(bouton2, "ENERGY") ==0) {
                             fprintf(fp2, "%d %d \n",  num4, Secolu4);
                         }
-                        if (bouton2==2) {
+                        if (strcmp(bouton2,"TIME") ==0) {
                             fprintf(fp2, "%d %d \n", Secolu4, num4);
                         }
                 }  
@@ -755,13 +746,20 @@ int Principlemain(int argc, char *argv[])
         }
     fclose(fp);
     fclose(fp2);
-    remove(output_file);
     }
-    strcat(name1, ".txt");
-    if (rename(name1, argv[1]) != 0) {
-        printf("Error: Unable to rename the file.\n");
-        return 1;
+    if (strcmp(bouton1, "ALL-EVENTS") ==0) {
+        if (rename(name1, argv[1]) != 0) {
+            printf("Error: Unable to rename the file.\n");
+            return 1;
+        }
+    } else {
+        remove(name1);
+        if (rename(OutPutFile, argv[1]) != 0) {
+            printf("Error: Unable to rename the file.\n");
+            return 1;
+        }
     }
+
 
     return 0;
 }
