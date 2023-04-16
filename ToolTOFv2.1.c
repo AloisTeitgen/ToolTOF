@@ -64,16 +64,12 @@ int main() {
     char check3 [2];
     char bouton1[100];
     char bouton2[100];
-
-
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     char buffer[20];
-
     sprintf(buffer, "%04d-%02d-%02d_%02d-%02d-%02d", 
         tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
         tm.tm_hour, tm.tm_min, tm.tm_sec);
-    
     printf("Enter the name of the file : ");
     scanf("%s", name);
 
@@ -85,16 +81,13 @@ int main() {
         if (extension) {
             *extension = '\0';
         }
-
         filename[strcspn(filename, "\n")] = '\0';
-
         printf("filename = %s\n", name);
         strcpy(name1, filename);
         strcat(name1, ".txt");
-
         printf("Do you want to use this file (Y/N): ");
         scanf("%s", Question);
-        getchar();  // consomme le caractère de retour à la ligne
+        getchar(); 
 
         if (strcmp(Question, "Y") == 0 || strcmp(Question, "y") == 0) {
             break;
@@ -104,10 +97,10 @@ int main() {
             name[strcspn(name, "\n")] = '\0';
         }
     }
+
     printf("Do you want to have ALL-EVENTS or only COINCIDENCE events ? (A/C): ");
     scanf ("%s", check);
     getchar();
-
     if (strcmp(check, "A") == 0 || strcmp(check, "a") == 0) {
         printf("You have chosen to have ALL-EVENTS, would you like to change? (Y/N) :\n");
         scanf ("%s", check2);
@@ -127,7 +120,7 @@ int main() {
             strcpy(bouton1, "ALL-EVENTS");
         }
     } else {
-        printf("Choix invalide.\n");
+        printf("Invalid choice.\n");
         getchar(); 
         return 0;
     }
@@ -155,10 +148,6 @@ int main() {
 
 
     sprintf(filename + strlen(filename), "_%s_%s_%s.txt", bouton1, bouton2, buffer);
-
-
-
-
     char* args[] = {name, filename, bouton1, bouton2};
     int num_args = sizeof(args) / sizeof(args[0]);
     Principlemain(num_args, args);
@@ -212,7 +201,7 @@ int Principlemain(int argc, char *argv[])
     int count = 0;
     char c;
     if (fp == NULL) {
-        printf("Erreur lors de l'ouverture du fichier.\n");
+        printf("Error when opening the file.\n");
         return 1;
     }
     while ((c = fgetc(fp)) != EOF) {
@@ -712,19 +701,17 @@ int Principlemain(int argc, char *argv[])
 
         //Checks if the files have been opened successfully
         if (fp == NULL) {
-            printf("Erreur: Impossible d'ouvrir le fichier texte d'entrée.\n");
+            printf("Error: Unable to open the input text file.\n");
             return 1;
         }
         if (fp2 == NULL) {
-            printf("Erreur: Impossible d'ouvrir le fichier texte de sortie.\n");
+            printf("Error: Unable to open the output text file.\n");
             return 1;
         }
 
         // Scans the file row by row, retrieves the numbers from the two columns of each row and checks the given ADC to arrange the numbers in order
         while (fgets(line, sizeof(line), fp)) {
-            //printf("\n line : %s", line);
-            i=i+1;
-            //printf("j : %d\n", j);    
+            i=i+1;  
             if (i==0){
                 sscanf(line, "%d %d %d %d", &num1, &num2, &num3, &num4);
             }
